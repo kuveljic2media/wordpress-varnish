@@ -23,6 +23,16 @@ include "lib/mobile_pass.vcl";
 
 ### WordPress-specific config ###
 sub vcl_recv {
+
+    {{ if getenv "VARNISH_CACHE_UPDATE_SPIDER_IP" }}
+	if (client.ip ~ "{{getenv "VARNISH_CACHE_UPDATE_SPIDER_IP") {
+    	set req.hash_always_miss = true;
+    	set req.http.X-Spider-Cache-Router = "Cached new file";
+    }else{
+    	set req.http.X-Spider-Cache-Router = "No";
+    }
+    {{ end }}
+    
     # pipe on weird http methods
     if (req.method !~ "^GET|HEAD|PUT|POST|TRACE|OPTIONS|DELETE$") {
         return(pipe);
