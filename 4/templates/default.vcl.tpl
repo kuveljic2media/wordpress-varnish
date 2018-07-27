@@ -25,7 +25,7 @@ include "lib/mobile_pass.vcl";
 sub vcl_recv {
 
     {{ if getenv "VARNISH_CACHE_UPDATE_SPIDER_IP" }}
-	if (client.ip ~ "{{getenv "VARNISH_CACHE_UPDATE_SPIDER_IP") {
+	if (client.ip ~ "{{getenv "VARNISH_CACHE_UPDATE_SPIDER_IP"}}") {
     	set req.hash_always_miss = true;
     	set req.http.X-Spider-Cache-Router = "Cached new file";
     }else{
