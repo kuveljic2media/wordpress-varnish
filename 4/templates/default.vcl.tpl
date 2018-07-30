@@ -21,15 +21,22 @@ include "lib/mobile_cache.vcl";
 include "lib/mobile_pass.vcl";
 {{ end }}
 
+{{ if getenv "VARNISH_CACHE_UPDATE_SPIDER_IP" }}
+acl cache_clear_origin {
+  "{{ getenv "VARNISH_CACHE_UPDATE_SPIDER_IP" }}";
+  /* or whereever the spider comes from */
+}
+{{ end }}
+
 ### WordPress-specific config ###
 sub vcl_recv {
 
     {{ if getenv "VARNISH_CACHE_UPDATE_SPIDER_IP" }}
-	if (client.ip ~ "{{getenv "VARNISH_CACHE_UPDATE_SPIDER_IP"}}") {
-    	set req.hash_always_miss = true;
-    	set req.http.X-Spider-Cache-Router = "Cached new file";
+    if (client.ip ~ cache_clear_origin) {
+    	# set req.hash_always_miss = true;
+    	# set req.http.X-Spider-Cache-Router = "Cached new file";
     }else{
-    	set req.http.X-Spider-Cache-Router = "No";
+        # set req.http.X-Spider-Cache-Router = "No";
     }
     {{ end }}
     
