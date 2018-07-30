@@ -24,7 +24,6 @@ include "lib/mobile_pass.vcl";
 {{ if getenv "VARNISH_CACHE_UPDATE_SPIDER_IP" }}
 acl cache_clear_origin {
   "{{ getenv "VARNISH_CACHE_UPDATE_SPIDER_IP" }}";
-  /* or whereever the spider comes from */
 }
 {{ end }}
 
