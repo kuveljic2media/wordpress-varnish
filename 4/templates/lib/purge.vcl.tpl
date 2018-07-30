@@ -85,6 +85,8 @@ sub vcl_deliver {
     unset resp.http.X-VC-Req-URL;
     unset resp.http.X-VC-Req-URL-Base;
 
+    set resp.http.X-Spider-Cache-Router = req.http.X-Spider-Cache-Router;
+
     if (obj.hits > 0) {
         set resp.http.X-VC-Cache = "HIT";
     } else {
