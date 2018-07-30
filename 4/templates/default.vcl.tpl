@@ -173,6 +173,10 @@ sub vcl_backend_response {
     return(deliver);
 }
 
+sub vcl_deliver {
+    set resp.http.X-Spider-Cache-Router = req.http.X-Spider-Cache-Router;
+}
+
 sub vcl_synth {
     if (resp.status == 750) {
         set resp.http.Location = req.http.X-VC-Redirect;
