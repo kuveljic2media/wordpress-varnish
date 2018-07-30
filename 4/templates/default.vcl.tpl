@@ -33,10 +33,7 @@ sub vcl_recv {
 
     {{ if getenv "VARNISH_CACHE_UPDATE_SPIDER_IP" }}
     if (client.ip ~ cache_clear_origin) {
-    	# set req.hash_always_miss = true;
-    	# set req.http.X-Spider-Cache-Router = "Cached new file";
-    }else{
-        # set req.http.X-Spider-Cache-Router = "No";
+    	set req.hash_always_miss = true;
     }
     {{ end }}
     
@@ -129,6 +126,14 @@ sub vcl_backend_response {
     if (beresp.http.Set-Cookie) {
         set beresp.ttl = 0s;
     }
+
+    {{ if getenv "VARNISH_CACHE_UPDATE_SPIDER_IP" }}
+    if (client.ip ~ cache_clear_origin) {
+    	set beresp.http.X-Spider-Cache-Router = "Cached new file";
+    }else{
+      set beresp.http.X-Spider-Cache-Router = "No";
+    }
+    {{ end }}
 
     # Don't cache object as instructed by header bereq.X-VC-Cacheable
     if (bereq.http.X-VC-Cacheable ~ "^NO") {
