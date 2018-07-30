@@ -129,8 +129,6 @@ sub vcl_backend_response {
         set beresp.ttl = 0s;
     }
 
-    set beresp.http.X-Spider-Cache-Router = req.http.X-Spider-Cache-Router;
-
     # Don't cache object as instructed by header bereq.X-VC-Cacheable
     if (bereq.http.X-VC-Cacheable ~ "^NO") {
         set beresp.http.X-VC-Cacheable = bereq.http.X-VC-Cacheable;
